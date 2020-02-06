@@ -21,7 +21,7 @@ with open(dataSet) as dts:
     for line in lines:
         for word in word_tokenize(line):
             if (word not in Vocabulary and permissible_chars(word)):
-                # print(word)
+                print(word)
                 Vocabulary.append(word)
 
 
@@ -33,11 +33,11 @@ for idx, word in enumerate(Vocabulary):
     W2I[word] = idx
     I2W[idx] = word
 
-w2iOutPut = open('./dataset/w2i.pkl', 'w')
+w2iOutPut = open('./dataset/w2i.pkl', 'wb')
 pkl.dump(W2I, w2iOutPut)
 w2iOutPut.close()
 
 
-i2wOutPut = open('./dataset/i2w.pkl', 'w')
+i2wOutPut = open('./dataset/i2w.pkl', 'wb')
 pkl.dump(I2W, i2wOutPut)
 i2wOutPut.close()
