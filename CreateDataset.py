@@ -53,7 +53,6 @@ with open('./dataset/data.txt', 'r') as dfile:
         dataset.append(iline)
 
 
-
 dataset = np.array(dataset)
 
 train, validate, test = spelitCorpus(dataset)
