@@ -15,7 +15,7 @@ def permissible_chars(word):
 
 
 def spelitCorpus(corpus, trainRate=0.6, validationRate=0.2, testRate=0.2):
-    if trainRate * validationRate + testRate == 1.0:
+    if int(trainRate + validationRate + testRate) == 1:
         np.random.shuffle(corpus)
         trainSplitIndex = floor(len(corpus) * trainRate)
         validationSplitIndex = floor(len(corpus) * validationRate)
@@ -40,17 +40,19 @@ with open('./dataset/w2i.pkl', 'rb') as wi:
 
 # with open('./dataset/i2w.pkl','rb') as iw:
 #     I2W = pkl.load(iw)
-
+c =0
 dataset = []
-with open('/dataset/data.txt', 'r') as dfile:
+with open('./dataset/data.txt', 'r') as dfile:
     lines = dfile.readlines()
     for line in lines:
         iline = []
         words = word_tokenize(line)
         for word in words:
             if permissible_chars(word):
-                iline.append(W2I)
+                iline.append(W2I[word])
         dataset.append(iline)
+
+
 
 dataset = np.array(dataset)
 
@@ -59,21 +61,20 @@ train, validate, test = spelitCorpus(dataset)
 with open("./dataset/train.txt", "w") as trainfile:
     for senItem in train:
         sentence = ''
-        for ind in sentence:
-            senItem = sentence + ' ' + str(ind)
+        for ind in senItem:
+            sentence = sentence + ' ' + str(ind)
         trainfile.write(sentence + '\n')
 
 with open("./dataset/val.txt", "w") as valfile:
     for senItem in validate:
         sentence = ''
-        for ind in sentence:
-            senItem = sentence + ' ' + str(ind)
+        for ind in senItem:
+            sentence = sentence + ' ' + str(ind)
         valfile.write(sentence + '\n')
 
-
-with open("./dataset/train.txt", "w") as trainfile:
-    for senItem in train:
+with open("./dataset/test.txt", "w") as testfile:
+    for senItem in test:
         sentence = ''
-        for ind in sentence:
-            senItem = sentence + ' ' + str(ind)
-        trainfile.write(sentence + '\n')
+        for ind in senItem:
+            sentence = sentence + ' ' + str(ind)
+        testfile.write(sentence + '\n')
