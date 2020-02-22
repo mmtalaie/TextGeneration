@@ -98,6 +98,7 @@ class TARGET_LSTM(object):
             tf.one_hot(tf.to_int32(tf.reshape(self.x, [-1])), self.num_emb, 1.0, 0.0) * tf.log(
                 tf.reshape(self.g_predictions, [-1, self.num_emb]))) / (self.sequence_length * self.batch_size)
 
+        self.optimizer = tf.train.sdca_optimizer
         self.out_loss = tf.reduce_sum(
             tf.reshape(
                 -tf.reduce_sum(
@@ -195,22 +196,22 @@ class TARGET_LSTM(object):
 
 
 
-    def train_random_sequence(self, epoch):
-        possible_batch_id = range(ms.NEWS_vocab_size - ms.seq_len - 1)
-        LOST, ACCURACY = [], []
-        pbar = tqdm(range(epoch), desc='epoch')
-        for i in pbar:
-            last_time = time.time()
-            init_value = np.zeros((ms.batch_size, 2 * 2 * 64))
-            batch_x = np.zeros((ms.batch_size, ms.seq_len))
-            batch_y = np.zeros((ms.batch_size, ms.seq_len))
-            batch_id = random.sample(possible_batch_id, ms.batch_size)
-            for n in range(sequence_length):
-                id1 = embed_to_onehot([text[k + n] for k in batch_id], text_vocab)
-                id2 = embed_to_onehot([text[k + n + 1] for k in batch_id], text_vocab)
-                batch_x[:, n] = id1
-                batch_y[:, n] = id2
-            last_state, _, loss = sess.run([model.last_state, model.optimizer, model.cost],
-                                           feed_dict={model.X: batch_x,
-                                                      model.Y: batch_y,
-                                                      model.hidden_layer: init_value})
+    # def train_random_sequence(self, epoch):
+    #     possible_batch_id = range(ms.NEWS_vocab_size - ms.seq_len - 1)
+    #     LOST, ACCURACY = [], []
+    #     pbar = tqdm(range(epoch), desc='epoch')
+    #     for i in pbar:
+    #         last_time = time.time()
+    #         init_value = np.zeros((ms.batch_size, 2 * 2 * 64))
+    #         batch_x = np.zeros((ms.batch_size, ms.seq_len))
+    #         batch_y = np.zeros((ms.batch_size, ms.seq_len))
+    #         batch_id = random.sample(possible_batch_id, ms.batch_size)
+    #         for n in range(sequence_length):
+    #             id1 = embed_to_onehot([text[k + n] for k in batch_id], text_vocab)
+    #             id2 = embed_to_onehot([text[k + n + 1] for k in batch_id], text_vocab)
+    #             batch_x[:, n] = id1
+    #             batch_y[:, n] = id2
+    #         self.last_state, _, loss = sess.run([self.last_state, model.optimizer, model.cost],
+    #                                        feed_dict={model.X: batch_x,
+    #                                                   model.Y: batch_y,
+    #                                                   model.hidden_layer: init_value})

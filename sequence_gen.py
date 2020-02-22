@@ -112,8 +112,8 @@ def main():
     sess.run(tf.global_variables_initializer())
 
     # First, use the oracle model to provide the positive examples, which are sampled from the oracle data distribution
-    # if not model_settings.use_real_data:
-        # generate_samples(sess, target_lstm, BATCH_SIZE, generated_num, positive_file)
+    if not model_settings.use_real_data:
+        generate_samples(sess, target_lstm, BATCH_SIZE, generated_num, positive_file)
     gen_data_loader.create_batches(positive_file)
 
     log = open('save/experiment-log.txt', 'w')

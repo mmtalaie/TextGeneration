@@ -48,19 +48,7 @@ class Model:
         self.correct_pred = tf.equal(
             tf.argmax(logits_long, 1), tf.cast(y_batch_long, tf.int64)
         )
-        _, _, _, self.g_predictions = control_flow_ops.while_loop(
-            cond=lambda i, _1, _2, _3: i < self.sequence_length,
-            body=_pretrain_recurrence,
-            loop_vars=(tf.constant(0, dtype=tf.int32),
-                       tf.nn.embedding_lookup(self.g_embeddings, self.start_token),
-                       self.h0, g_predictions))
-        # supervised pretraining for generator
-        self.g_predictions = tensor_array_ops.TensorArray(
-            dtype=tf.float32, size=ms.seq_len,
-            dynamic_size=False, infer_shape=True)
 
-        self.g_predictions = tf.transpose(
-            self.g_predictions.stack(), perm=[1, 0, 2])  # batch_size x seq_length x vocab_size
 
         self.pretrain_loss = tf.reduce_sum(
             tf.one_hot(tf.to_int32(tf.reshape(self.X, [-1])), self.num_emb, 1.0, 0.0) *
